@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - FinVista Student Expense Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI Variable Display', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(to bottom right, #74ebd5, #acb6e5);
+            color: #333;
+            min-height: 100vh;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2D3748;
+            text-decoration: none;
+        }
+
+        .logo i {
+            margin-right: 0.5rem;
+            color: #4A5568;
+        }
+
+        /* Signup Container */
+        .signup-container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: fadeInUp 0.8s ease forwards;
+            margin-top: 4rem;
+            height: 80vh;
+            max-height: 80vh;
+            min-height: 0;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #74ebd5 #e0e7ef;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .signup-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .signup-header h2 {
+            font-size: 2.2rem;
+            color: #2D3748;
+            margin-bottom: 0.5rem;
+        }
+
+        .signup-header p {
+            color: #4A5568;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #2D3748;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid rgba(45, 55, 72, 0.2);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.6);
+            color: #2D3748;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #74ebd5;
+            box-shadow: 0 0 0 2px rgba(116, 235, 213, 0.3);
+        }
+
+        .form-group input.error {
+            border-color: #ef4444;
+        }
+
+        .form-group input.valid {
+            border-color: #10b981;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #4A5568;
+        }
+
+        .password-hint {
+            color: #4A5568;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            outline: none;
+            font-size: 1.1rem;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: #4A5568;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #2D3748;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:disabled {
+            background: #A0AEC0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #4A5568;
+            border: 1px solid rgba(74, 85, 104, 0.3);
+            margin-top: 1rem;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Footer */
+        .signup-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #4A5568;
+        }
+
+        .signup-footer a {
+            color: #4A5568;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .signup-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Enhanced Toast Notification */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: toastIn 0.4s cubic-bezier(0.21, 1.02, 0.73, 1) forwards;
+            max-width: 350px;
+            border-left: 4px solid #4A5568;
+            transform: translateX(100%);
+            opacity: 0;
+        }
+
+        .toast.success {
+            border-left-color: #10b981;
+        }
+
+        .toast.error {
+            border-left-color: #ef4444;
+        }
+
+        .toast.warning {
+            border-left-color: #f59e0b;
+        }
+
+        .toast.info {
+            border-left-color: #3b82f6;
+        }
+
+        .toast-icon {
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .toast.success .toast-icon {
+            color: #10b981;
+        }
+
+        .toast.error .toast-icon {
+            color: #ef4444;
+        }
+
+        .toast.warning .toast-icon {
+            color: #f59e0b;
+        }
+
+        .toast.info .toast-icon {
+            color: #3b82f6;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: #2D3748;
+        }
+
+        .toast-message {
+            font-size: 0.9rem;
+            color: #4A5568;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            color: #A0AEC0;
+            padding: 0;
+            margin-left: 8px;
+            flex-shrink: 0;
+        }
+
+        .toast-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 0 0 12px 12px;
+            overflow: hidden;
+        }
+
+        .toast-progress-bar {
+            height: 100%;
+            width: 100%;
+            transform-origin: left;
+            animation: progressBar 5s linear forwards;
+        }
+
+        .toast.success .toast-progress-bar {
+            background: #10b981;
+        }
+
+        .toast.error .toast-progress-bar {
+            background: #ef4444;
+        }
+
+        .toast.warning .toast-progress-bar {
+            background: #f59e0b;
+        }
+
+        .toast.info .toast-progress-bar {
+            background: #3b82f6;
+        }
+
+        @keyframes toastIn {
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes progressBar {
+            from {
+                transform: scaleX(1);
+            }
+
+            to {
+                transform: scaleX(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .signup-container {
+                padding: 2rem;
+                margin: 1rem;
+                height: 85vh;
+                max-height: 85vh;
+                min-height: 0;
+                overflow-y: auto;
+            }
+
+            .signup-header h2 {
+                font-size: 1.8rem;
+            }
+
+            body {
+                padding: 1rem;
+            }
+
+            .toast-container {
+                right: 10px;
+                left: 10px;
+                top: 80px;
+            }
+
+            .toast {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .signup-container {
+                padding: 1.5rem;
+                height: 90vh;
+                max-height: 90vh;
+                min-height: 0;
+                overflow-y: auto;
+            }
+
+            .signup-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .btn {
+                padding: 0.8rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">
+            <i class="fas fa-chart-pie"></i>
+            <span>FinVista</span>
+        </a>
+    </nav>
+
+    <!-- Signup Container -->
+    <div class="signup-container">
+        <div class="signup-header">
+            <h2>Create Account</h2>
+            <p>Sign up to get started with FinVista</p>
+        </div>
+
+        <form id="signup-form" autocomplete="off">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" placeholder="Enter your full name" required autocomplete="name">
+                <div class="error-message" id="name-error">Please enter your full name</div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="Enter your email" required autocomplete="email">
+                <div class="error-message" id="email-error">Please enter a valid email address</div>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" placeholder="Enter your phone number" required pattern="[0-9]{10}"
+                    autocomplete="tel">
+                <div class="error-message" id="phone-error">Please enter a valid 10-digit phone number</div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="password-container">
+                    <input type="password" id="password" placeholder="Create a password" required
+                        autocomplete="new-password">
+                    <span class="toggle-password" id="togglePassword">
+                        <i class="far fa-eye" id="eyeIcon"></i>
+                    </span>
+                </div>
+                <ul class="password-hint" id="password-rules"
+                    style="margin-top:0.5rem;list-style:disc;padding-left:1.5rem;color:#4A5568;">
+                    <li id="rule-length">At least 8 characters</li>
+                    <li id="rule-upper">At least one uppercase letter</li>
+                    <li id="rule-lower">At least one lowercase letter</li>
+                    <li id="rule-number">At least one number</li>
+                    <li id="rule-special">At least one special character</li>
+                </ul>
+                <div class="error-message" id="password-error">Password does not meet all requirements</div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="submit-btn" disabled>Create Account</button>
+        </form>
+
+        <div class="signup-footer">
+            <p>Already have an account? <a href="login.html">Sign in</a></p>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const signupForm = document.getElementById('signup-form');
+            const nameInput = document.getElementById('name');
+            const emailInput = document.getElementById('email');
+            const phoneInput = document.getElementById('phone');
+            const passwordInput = document.getElementById('password');
+            const togglePassword = document.getElementById('togglePassword');
+            const eyeIcon = document.getElementById('eyeIcon');
+            const submitBtn = document.getElementById('submit-btn');
+            const toastContainer = document.getElementById('toast-container');
+
+            let passwordVisible = false;
+            let formValid = {
+                name: false,
+                email: false,
+                phone: false,
+                password: false
+            };
+
+            // Toggle password visibility
+            togglePassword.addEventListener('click', () => {
+                passwordVisible = !passwordVisible;
+                passwordInput.type = passwordVisible ? 'text' : 'password';
+                eyeIcon.className = passwordVisible ? 'far fa-eye-slash' : 'far fa-eye';
+            });
+
+            // Input validation
+            nameInput.addEventListener('input', validateName);
+            emailInput.addEventListener('input', validateEmail);
+            phoneInput.addEventListener('input', validatePhone);
+            passwordInput.addEventListener('input', validatePassword);
+
+            function validateName() {
+                const name = nameInput.value.trim();
+                const nameError = document.getElementById('name-error');
+
+                if (name.length < 2) {
+                    nameInput.classList.add('error');
+                    nameInput.classList.remove('valid');
+                    nameError.style.display = 'block';
+                    formValid.name = false;
+                } else {
+                    nameInput.classList.remove('error');
+                    nameInput.classList.add('valid');
+                    nameError.style.display = 'none';
+                    formValid.name = true;
+                }
+                updateSubmitButton();
+            }
+
+            function validateEmail() {
+                const email = emailInput.value.trim();
+                const emailError = document.getElementById('email-error');
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                if (!emailRegex.test(email)) {
+                    emailInput.classList.add('error');
+                    emailInput.classList.remove('valid');
+                    emailError.style.display = 'block';
+                    formValid.email = false;
+                    updateSubmitButton();
+                } else {
+                    // Check with backend if email exists
+                    fetch(`/api/auth/check-email?email=${encodeURIComponent(email)}`)
+                        .then(async res => {
+                            let data;
+                            try {
+                                data = await res.json();
+                            } catch (e) {
+                                // Not JSON (likely server error or static error page)
+                                showToast('error', 'Server Error', 'Could not check email. Please try again later.');
+                                emailInput.classList.add('error');
+                                emailInput.classList.remove('valid');
+                                formValid.email = false;
+                                updateSubmitButton();
+                                return;
+                            }
+                            if (data.exists) {
+                                showToast('error', 'Account Exists', 'Account with this email already exists');
+                                emailInput.classList.add('error');
+                                emailInput.classList.remove('valid');
+                                formValid.email = false;
+                            } else {
+                                emailInput.classList.remove('error');
+                                emailInput.classList.add('valid');
+                                emailError.style.display = 'none';
+                                formValid.email = true;
+                            }
+                            updateSubmitButton();
+                        })
+                        .catch(() => {
+                            showToast('error', 'Server Error', 'Could not check email. Please try again later.');
+                            emailInput.classList.add('error');
+                            emailInput.classList.remove('valid');
+                            formValid.email = false;
+                            updateSubmitButton();
+                        });
+                }
+            }
+
+            function validatePhone() {
+                const phone = phoneInput.value.trim();
+                const phoneError = document.getElementById('phone-error');
+                if (!/^\d{10}$/.test(phone)) {
+                    phoneInput.classList.add('error');
+                    phoneInput.classList.remove('valid');
+                    phoneError.style.display = 'block';
+                    formValid.phone = false;
+                } else {
+                    phoneInput.classList.remove('error');
+                    phoneInput.classList.add('valid');
+                    phoneError.style.display = 'none';
+                    formValid.phone = true;
+                }
+                updateSubmitButton();
+            }
+
+            function validatePassword() {
+                const password = passwordInput.value;
+                const passwordError = document.getElementById('password-error');
+                const ruleLength = document.getElementById('rule-length');
+                const ruleUpper = document.getElementById('rule-upper');
+                const ruleLower = document.getElementById('rule-lower');
+                const ruleNumber = document.getElementById('rule-number');
+                const ruleSpecial = document.getElementById('rule-special');
+
+                let valid = true;
+                // Rule checks
+                if (password.length >= 8) {
+                    ruleLength.style.color = '#10b981';
+                } else {
+                    ruleLength.style.color = '#ef4444';
+                    valid = false;
+                }
+                if (/[A-Z]/.test(password)) {
+                    ruleUpper.style.color = '#10b981';
+                } else {
+                    ruleUpper.style.color = '#ef4444';
+                    valid = false;
+                }
+                if (/[a-z]/.test(password)) {
+                    ruleLower.style.color = '#10b981';
+                } else {
+                    ruleLower.style.color = '#ef4444';
+                    valid = false;
+                }
+                if (/[0-9]/.test(password)) {
+                    ruleNumber.style.color = '#10b981';
+                } else {
+                    ruleNumber.style.color = '#ef4444';
+                    valid = false;
+                }
+                if (/[^A-Za-z0-9]/.test(password)) {
+                    ruleSpecial.style.color = '#10b981';
+                } else {
+                    ruleSpecial.style.color = '#ef4444';
+                    valid = false;
+                }
+
+                if (!valid) {
+                    passwordInput.classList.add('error');
+                    passwordInput.classList.remove('valid');
+                    passwordError.style.display = 'block';
+                    formValid.password = false;
+                } else {
+                    passwordInput.classList.remove('error');
+                    passwordInput.classList.add('valid');
+                    passwordError.style.display = 'none';
+                    formValid.password = true;
+                }
+                updateSubmitButton();
+            }
+
+            function updateSubmitButton() {
+                if (formValid.name && formValid.email && formValid.phone && formValid.password) {
+                    submitBtn.disabled = false;
+                } else {
+                    submitBtn.disabled = true;
+                }
+            }
+
+            // Form submission
+            signupForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                // Gather form data
+                const name = nameInput.value.trim();
+                const email = emailInput.value.trim();
+                const phone = phoneInput.value.trim();
+                const password = passwordInput.value;
+
+                // Call backend register API (now returns token as plain string)
+                fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ fullName: name, email, password })
+                })
+                    .then(async res => {
+                        if (res.ok) {
+                            const authResponse = await res.json();
+                            // Store token and redirect
+                            localStorage.setItem('token', authResponse.token);
+                            showToast('success', 'Account Created', 'Your account has been created successfully!');
+                            setTimeout(() => {
+                                window.location.href = '/dashboard.html';
+                            }, 1500);
+                        } else {
+                            const errorText = await res.text();
+                            showToast('error', 'Signup Failed', errorText || 'Registration failed');
+                        }
+                    })
+                    .catch(() => {
+                        showToast('error', 'Signup Failed', 'An error occurred. Please try again.');
+                    });
+            });
+
+            // Enhanced toast notification function
+            function showToast(type, title, message) {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+
+                let iconClass = 'fas fa-info-circle';
+                if (type === 'success') iconClass = 'fas fa-check-circle';
+                if (type === 'error') iconClass = 'fas fa-exclamation-circle';
+                if (type === 'warning') iconClass = 'fas fa-exclamation-triangle';
+
+                toast.innerHTML = `
+                    <i class="toast-icon ${iconClass}"></i>
+                    <div class="toast-content">
+                        <div class="toast-title">${title}</div>
+                        <div class="toast-message">${message}</div>
+                    </div>
+                    <button class="toast-close">&times;</button>
+                    <div class="toast-progress">
+                        <div class="toast-progress-bar"></div>
+                    </div>
+                `;
+
+                toastContainer.appendChild(toast);
+
+                // Close toast on button click
+                const closeBtn = toast.querySelector('.toast-close');
+                closeBtn.addEventListener('click', () => {
+                    toast.style.animation = 'toastOut 0.3s forwards';
+                    setTimeout(() => {
+                        toastContainer.removeChild(toast);
+                    }, 300);
+                });
+
+                // Auto remove toast after 5 seconds
+                setTimeout(() => {
+                    if (toast.parentNode === toastContainer) {
+                        toast.style.animation = 'toastOut 0.3s forwards';
+                        setTimeout(() => {
+                            toastContainer.removeChild(toast);
+                        }, 300);
+                    }
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - FinVista Student Expense Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI Variable Display', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(to bottom right, #74ebd5, #acb6e5);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2D3748;
+            text-decoration: none;
+        }
+
+        .logo i {
+            margin-right: 0.5rem;
+            color: #4A5568;
+        }
+
+        /* Login Container */
+        .login-container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: fadeInUp 0.8s ease forwards;
+            margin-top: 4rem;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header h2 {
+            font-size: 2.2rem;
+            color: #2D3748;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: #4A5568;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #2D3748;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid rgba(45, 55, 72, 0.2);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.6);
+            color: #2D3748;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #74ebd5;
+            box-shadow: 0 0 0 2px rgba(116, 235, 213, 0.3);
+        }
+
+        .form-group input.error {
+            border-color: #ef4444;
+        }
+
+        .form-group input.valid {
+            border-color: #10b981;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #4A5568;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            outline: none;
+            font-size: 1.1rem;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: #4A5568;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #2D3748;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:disabled {
+            background: #A0AEC0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #4A5568;
+            border: 1px solid rgba(74, 85, 104, 0.3);
+            margin-top: 1rem;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Footer */
+        .login-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #4A5568;
+        }
+
+        .login-footer a {
+            color: #4A5568;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Enhanced Toast Notification */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: toastIn 0.4s cubic-bezier(0.21, 1.02, 0.73, 1) forwards;
+            max-width: 350px;
+            border-left: 4px solid #4A5568;
+            transform: translateX(100%);
+            opacity: 0;
+        }
+
+        .toast.success {
+            border-left-color: #10b981;
+        }
+
+        .toast.error {
+            border-left-color: #ef4444;
+        }
+
+        .toast.warning {
+            border-left-color: #f59e0b;
+        }
+
+        .toast.info {
+            border-left-color: #3b82f6;
+        }
+
+        .toast-icon {
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .toast.success .toast-icon {
+            color: #10b981;
+        }
+
+        .toast.error .toast-icon {
+            color: #ef4444;
+        }
+
+        .toast.warning .toast-icon {
+            color: #f59e0b;
+        }
+
+        .toast.info .toast-icon {
+            color: #3b82f6;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: #2D3748;
+        }
+
+        .toast-message {
+            font-size: 0.9rem;
+            color: #4A5568;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            color: #A0AEC0;
+            padding: 0;
+            margin-left: 8px;
+            flex-shrink: 0;
+        }
+
+        .toast-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 0 0 12px 12px;
+            overflow: hidden;
+        }
+
+        .toast-progress-bar {
+            height: 100%;
+            width: 100%;
+            transform-origin: left;
+            animation: progressBar 5s linear forwards;
+        }
+
+        .toast.success .toast-progress-bar {
+            background: #10b981;
+        }
+
+        .toast.error .toast-progress-bar {
+            background: #ef4444;
+        }
+
+        .toast.warning .toast-progress-bar {
+            background: #f59e0b;
+        }
+
+        .toast.info .toast-progress-bar {
+            background: #3b82f6;
+        }
+
+        @keyframes toastIn {
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes progressBar {
+            from {
+                transform: scaleX(1);
+            }
+
+            to {
+                transform: scaleX(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .login-container {
+                padding: 2rem;
+                margin: 1rem;
+            }
+
+            .login-header h2 {
+                font-size: 1.8rem;
+            }
+
+            body {
+                padding: 1rem;
+            }
+
+            .toast-container {
+                right: 10px;
+                left: 10px;
+                top: 80px;
+            }
+
+            .toast {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 1.5rem;
+            }
+
+            .login-header h2 {
+                font-size: 1.5rem;
+            }
+
+            .btn {
+                padding: 0.8rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">
+            <i class="fas fa-chart-pie"></i>
+            <span>FinVista</span>
+        </a>
+        <div style="display:flex; align-items:center; gap:8px;">
+            <a id="admin-link" class="btn btn-link" href="/admin.html" style="display:none;">Admin</a>
+        </div>
+    </nav>
+
+    <!-- Login Container -->
+    <div class="login-container">
+        <div class="login-header">
+            <h2>Welcome Back</h2>
+            <p>Sign in to your account to continue</p>
+        </div>
+
+        <form id="login-form">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="Enter your email" required autocomplete="email">
+                <div class="error-message" id="email-error">Please enter a valid email address</div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="password-container">
+                    <input type="password" id="password" placeholder="Enter your password" required
+                        autocomplete="current-password">
+                    <span class="toggle-password" id="togglePassword">
+                        <i class="far fa-eye" id="eyeIcon"></i>
+                    </span>
+                </div>
+                <div class="error-message" id="password-error">Please enter your password</div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="submit-btn">Login</button>
+        </form>
+
+        <div class="login-footer">
+            <p>Don't have an account? <a href="signup.html">Sign up</a></p>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('login-form');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const togglePassword = document.getElementById('togglePassword');
+            const eyeIcon = document.getElementById('eyeIcon');
+            const submitBtn = document.getElementById('submit-btn');
+            const toastContainer = document.getElementById('toast-container');
+
+            let passwordVisible = false;
+            let formValid = {
+                email: false,
+                password: false
+            };
+
+            // Toggle password visibility
+            togglePassword.addEventListener('click', () => {
+                passwordVisible = !passwordVisible;
+                passwordInput.type = passwordVisible ? 'text' : 'password';
+                eyeIcon.className = passwordVisible ? 'far fa-eye-slash' : 'far fa-eye';
+            });
+
+            // Input validation
+            emailInput.addEventListener('input', validateEmail);
+            passwordInput.addEventListener('input', validatePassword);
+
+            function validateEmail() {
+                const email = emailInput.value.trim();
+                const emailError = document.getElementById('email-error');
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                if (!emailRegex.test(email)) {
+                    emailInput.classList.add('error');
+                    emailInput.classList.remove('valid');
+                    emailError.style.display = 'block';
+                    formValid.email = false;
+                } else {
+                    emailInput.classList.remove('error');
+                    emailInput.classList.add('valid');
+                    emailError.style.display = 'none';
+                    formValid.email = true;
+                }
+            }
+
+            function validatePassword() {
+                const password = passwordInput.value;
+                const passwordError = document.getElementById('password-error');
+
+                if (password.length === 0) {
+                    passwordInput.classList.add('error');
+                    passwordInput.classList.remove('valid');
+                    passwordError.style.display = 'block';
+                    formValid.password = false;
+                } else {
+                    passwordInput.classList.remove('error');
+                    passwordInput.classList.add('valid');
+                    passwordError.style.display = 'none';
+                    formValid.password = true;
+                }
+            }
+
+            // Form submission
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                // Validate form
+                validateEmail();
+                validatePassword();
+
+                if (!formValid.email || !formValid.password) {
+                    showToast('error', 'Validation Error', 'Please fill in all fields correctly');
+                    return;
+                }
+
+                // Get form values
+                const email = emailInput.value;
+                const password = passwordInput.value;
+
+                // Show loading toast
+                showToast('info', 'Logging In', 'Please wait while we sign you in...');
+
+                // Call backend login API
+                (async () => {
+                    try {
+                        const resp = await fetch('/api/auth/login', {
+                            method: 'POST',
+                            credentials: 'same-origin',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email, password })
+                        });
+
+                        // Try to parse JSON response safely
+                        let json = {};
+                        try { json = await resp.json(); } catch (parseErr) { /* ignore */ }
+
+                        if (resp.ok && json.token) {
+                            // Store token with consistent key
+                            localStorage.setItem('token', json.token);
+                            showToast('success', 'Login Successful', 'Welcome back to FinVista!');
+                            setTimeout(() => { window.location.href = '/dashboard.html'; }, 800);
+                        } else {
+                            const message = (json && json.error) ? json.error : (json && json.message) ? json.message : 'Invalid credentials';
+                            showToast('error', 'Login Failed', message);
+                        }
+                    } catch (e) {
+                        showToast('error', 'Server Error', 'Unable to contact server');
+                        console.error('Login error', e);
+                    }
+                })();
+            });
+
+            // Enhanced toast notification function
+            function showToast(type, title, message) {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+
+                let iconClass = 'fas fa-info-circle';
+                if (type === 'success') iconClass = 'fas fa-check-circle';
+                if (type === 'error') iconClass = 'fas fa-exclamation-circle';
+                if (type === 'warning') iconClass = 'fas fa-exclamation-triangle';
+
+                toast.innerHTML = `
+                    <i class="toast-icon ${iconClass}"></i>
+                    <div class="toast-content">
+                        <div class="toast-title">${title}</div>
+                        <div class="toast-message">${message}</div>
+                    </div>
+                    <button class="toast-close">&times;</button>
+                    <div class="toast-progress">
+                        <div class="toast-progress-bar"></div>
+                    </div>
+                `;
+
+                toastContainer.appendChild(toast);
+
+                // Close toast on button click
+                const closeBtn = toast.querySelector('.toast-close');
+                closeBtn.addEventListener('click', () => {
+                    toast.style.animation = 'toastOut 0.3s forwards';
+                    setTimeout(() => {
+                        toastContainer.removeChild(toast);
+                    }, 300);
+                });
+
+                // Auto remove toast after 5 seconds
+                setTimeout(() => {
+                    if (toast.parentNode === toastContainer) {
+                        toast.style.animation = 'toastOut 0.3s forwards';
+                        setTimeout(() => {
+                            toastContainer.removeChild(toast);
+                        }, 300);
+                    }
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+
+</html>
